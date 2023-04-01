@@ -526,47 +526,58 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
             nodeSwap(temp, predecessor(temp));
 
         }*/
-        temp =temp->getParent();
+        temp = temp->getParent();
         Node <Key,Value>* target;
         target =this->internalFind(key);
         if (target->getLeft()!=NULL && target->getRight()!=NULL){
           //fill this out
           nodeSwap(target, predecessor(target));
-          if (root_==target){
-            root_=predecessor(target);
-          }
-
-          
         }
-        
+
         if (target->getLeft()==NULL && target->getRight()==NULL){
           if (target==root_){
             root_=NULL;
           }
-          else if (temp->getLeft()==target){
-            temp->setLeft(NULL);
+          else if(root_->getLeft() == target){
+            root_->setLeft(NULL);
+            //paste this in other locations
           }
-          else if (temp->getRight()==target){
+          else if (root_->getRight()==target){
+            root_->setRight(NULL);
+          }
+          else if (temp != NULL && temp->getLeft()==target){
+            temp->setLeft(NULL);
+            delete temp;
+          }
+          else if (temp != NULL && temp->getRight()==target){
             temp->setRight(NULL);
+            delete temp;
           }
           delete target;
-          delete temp;
         }
         else if (target->getRight()!=NULL && target->getLeft()==NULL){
           if (target==root_){
             root_=target->getRight();
             target ->setParent(NULL);
           }
+          else if(root_->getLeft() == target){
+            root_->setLeft(NULL);
+            //paste this in other locations
+          }
+          else if (root_->getRight()==target){
+            root_->setRight(NULL);
+          }
           else if (temp->getLeft()==target){
             temp->setLeft(target->getRight());
             target->getRight()->setParent(target->getParent());
+            delete temp;
           }
           else{
             temp->setRight(target->getRight());
             target->getRight()->setParent(target->getParent());
+            delete temp;
           }
           delete target;
-          delete temp;
         }
         else if (target->getLeft()!=NULL &&target->getRight()==NULL){
           if (target==root_){
@@ -576,13 +587,21 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
           else if (temp->getRight()==target){
             temp->setLeft (target->getLeft());
             target->getLeft()->setParent(target->getParent());
+            delete temp;
+          }
+          else if(root_->getLeft() == target){
+            root_->setLeft(NULL);
+            //paste this in other locations
+          }
+          else if (root_->getRight()==target){
+            root_->setRight(NULL);
           }
           else{
             temp->setRight(target->getLeft());
             target->getLeft()->setParent(target->getParent());
+            delete temp;
           }
           delete target;
-          delete temp;
         }
         //find the node to delete
         //if node has two children, swap with predecessor
